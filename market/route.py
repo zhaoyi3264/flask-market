@@ -1,7 +1,7 @@
 from flask import flash, render_template, redirect, url_for
 
 from market import app, db
-from market.form import RegisterForm
+from market.form import LoginForm, RegisterForm
 from market.model import Item, User
 
 @app.route('/')
@@ -20,7 +20,7 @@ def register_page():
     if form.validate_on_submit():
         user = User(username=form.username.data,
             email_address=form.email_address.data,
-            password_hash=form.password1.data)
+            password=form.password1.data)
         db.session.add(user)
         db.session.commit()
         return redirect(url_for('market_page'))
@@ -28,3 +28,8 @@ def register_page():
         for err in form.errors.values():
             flash(err, category='danger')
     return render_template('register.html', form=form)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login_page():
+    form = LoginForm()
+    return render_template('login.html', form=form)
