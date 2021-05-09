@@ -14,6 +14,7 @@ def home_page():
 @login_required
 def market_page():
     purchase_form = PurchaseItemForm()
+    sell_form = SellItemForm()
     if request.method == 'POST':
         purchased_item = request.form.get('purchased_item')
         print(purchased_item)
@@ -24,10 +25,21 @@ def market_page():
                 flash(f'Congratulations! Your purchased {p.name} for ${p.price}', category='success')
             else:
                 flash(f'Unfortunately, you don\'t have enough money to purchase {p.name}', category='danger')
-            return redirect(url_for('market_page'))
+        sold_item = request.form.get('sold_item')
+        s = Item.query.filter_by(name=sold_item).first()
+        if s:
+            if current_user.can_sell(s):
+                s.sell(current_user)
+                flash(f'Congratulations! Your sold {s.name} for ${s.price}', category='success')
+            else:
+                flash(f'Something went wrong with selling {s.name}', category='danger')
+        return redirect(url_for('market_page'))
     if request.method == 'GET':
         items = Item.query.filter_by(owner=None)
-        return render_template('market.html', items=items, purchase_form=purchase_form)
+        owned_items = Item.query.filter_by(owner=current_user.id)
+
+        return render_template('market.html', items=items, purchase_form=purchase_form,
+            owned_items=owned_items, sell_form=sell_form)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register_page():
