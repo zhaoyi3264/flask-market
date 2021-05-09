@@ -2,6 +2,7 @@ from flask import flash, render_template, redirect, url_for
 
 from market import app, db
 from market.form import LoginForm, RegisterForm
+from flask_login import login_user
 from market.model import Item, User
 
 @app.route('/')
@@ -32,4 +33,12 @@ def register_page():
 @app.route('/login', methods=['GET', 'POST'])
 def login_page():
     form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and user.check_password(form.password.data):
+            login_user(user)
+            flash(f'Success! You are logged in as: {user.username}', category='success')
+            return redirect(url_for('market_page'))
+        else:
+            flash('User name and password are not match!', category='danger')
     return render_template('login.html', form=form)
