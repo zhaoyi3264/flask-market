@@ -40,7 +40,7 @@ class Item(db.Model):
     owner = db.Column(db.Integer(), db.ForeignKey('user.id'))
 
     def buy(self, user):
-        self.owner = user
+        self.owner = user.id
         user.budget -= self.price
         db.session.commit()
     
