@@ -1,4 +1,6 @@
-from flask import flash, render_template, redirect, url_for, request
+import io
+
+from flask import flash, render_template, redirect, url_for, request, send_file
 from flask_login import login_user, logout_user, login_required, current_user
 
 from market import app, db
@@ -76,3 +78,8 @@ def logout_page():
     logout_user()
     flash('You have been logged out!', category='info')
     return redirect(url_for('home_page'))
+
+@app.route('/logo.png')
+def logo():
+    with open('./market/img/logo.png', 'rb') as img:
+        return send_file(io.BytesIO(img.read()), mimetype='image/png')
