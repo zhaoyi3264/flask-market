@@ -3,7 +3,12 @@ import string
 
 import numpy as np
 import pandas as pd
+import requests
 import sqlite3 as sql
+
+with open('products.csv', 'w') as f:
+    res = requests.get('https://raw.githubusercontent.com/etano/productner/master/Product%20Dataset.csv')
+    f.write(res.text)
 
 db_file = os.path.join('market', 'market.db')
 
