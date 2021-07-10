@@ -1,6 +1,6 @@
 # flask-market
 
-A market for buying and selling electronic products built using Python Flask.
+A market for buying and selling electronic products built with Bootstrap, Jinja, Flask and SQLite.
 
 To download dataset and create a sqlite db file:
 
